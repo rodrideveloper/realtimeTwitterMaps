@@ -1,0 +1,75 @@
+
+<html>
+	<head>	
+	  <script src="/socket.io/socket.io.js"></script>	
+	  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>	
+
+	  	 <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization"></script>
+
+	    
+		<script>
+				var coordenadas={
+					lat:0,
+					lon:0
+				};
+				var socket;
+				var heatmap;
+				var map;
+				var position;
+				var tweetLocation;
+				var liveTweets;
+				
+				$(document).ready(inicio);
+
+				function inicio(){
+							  
+
+						var mapOptions = {
+				        zoom: 3,
+				        center: new google.maps.LatLng(37.782551, -122.445368),    
+			       		mapTypeId: google.maps.MapTypeId.ROADMAP
+
+    			      }
+    		 	     map = new google.maps.Map($("#mapa").get(0), mapOptions);
+					
+					}
+					liveTweets = new google.maps.MVCArray();
+					heatmap = new google.maps.visualization.HeatmapLayer({
+					    data: liveTweets,
+					    radius: 25
+					});
+				     heatmap.setMap(map);
+  				
+				socket = io.connect(window.location.href);
+					  	socket.on('mensaje',function(data){	
+  						
+						 tweetLocation = new google.maps.LatLng(data.coords.lng,data.coords.lat);
+						 console.log(data.coords.lat,data.coords.lng);
+     					liveTweets.push(tweetLocation);
+
+     					
+
+						var marker = new google.maps.Marker({
+					        position: tweetLocation,
+					        map: map
+					        
+	      				});
+
+					     
+
+					});
+					
+
+  				
+				
+		</script>
+	</head>
+
+	<body>
+
+		<div id="mapa" style="width: 100%; height: 100%"><div>
+
+	</body>
+
+</html>
+
